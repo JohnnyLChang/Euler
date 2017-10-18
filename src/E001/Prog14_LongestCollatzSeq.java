@@ -1,6 +1,6 @@
 package E001;
 
-import E001.EulerProg;
+import base.EulerProg;
 
 public class Prog14_LongestCollatzSeq implements EulerProg {
 	public static void main(String[] args) {

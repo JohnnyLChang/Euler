@@ -1,4 +1,4 @@
-package E001;
+package base;
 
 public interface EulerProg{
 	public String run();

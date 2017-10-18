@@ -1,5 +1,7 @@
 package E001;
 
+import base.EulerProgBase;
+
 public class Prog28_NumberSpiralDiagnos extends EulerProgBase {
 
 	public static void main(String[] args) {

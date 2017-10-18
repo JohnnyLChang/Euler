@@ -2,6 +2,8 @@ package E001;
 
 import java.math.BigInteger;
 
+import base.EulerProg;
+
 public class Prog16_PowerDigitSum implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println(new Prog16_PowerDigitSum().run());

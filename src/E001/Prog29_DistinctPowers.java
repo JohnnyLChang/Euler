@@ -1,7 +1,9 @@
 package E001;
 
 import java.math.BigInteger;
-import java.util.LinkedHashSet; 
+import java.util.LinkedHashSet;
+
+import base.EulerProgBase; 
 
 public class Prog29_DistinctPowers extends EulerProgBase {
 
@@ -22,9 +24,6 @@ public class Prog29_DistinctPowers extends EulerProgBase {
 		}
 		return String.valueOf(lhs.size());
 	}
-	
-	public String SmartRun() {
-		return "";
-	}
+
 
 }

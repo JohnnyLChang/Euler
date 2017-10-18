@@ -3,6 +3,8 @@ package E001;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import base.EulerProg;
+
 public class Prog23_NonAbundantSums implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println("NonAbundantSums:" + new Prog23_NonAbundantSums().run());

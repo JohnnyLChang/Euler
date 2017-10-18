@@ -2,6 +2,8 @@ package E001;
 
 import java.util.Arrays;
 
+import base.EulerProg;
+
 /*
 https://en.wikipedia.org/wiki/Repeating_decimal
 

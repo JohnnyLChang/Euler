@@ -2,6 +2,8 @@ package E001;
 
 import java.math.BigInteger;
 
+import base.EulerProg;
+
 public class Prog20_FactorialDigitalSum implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println(new Prog20_FactorialDigitalSum().run());

@@ -1,5 +1,7 @@
 package E001;
 
+import base.EulerProg;
+
 public class Prog19_CountSundays implements EulerProg {
 
 	public static void main(String[] args) {

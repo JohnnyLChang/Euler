@@ -1,7 +1,8 @@
-package E001;
+package Prog27_Quadratic_Primes;
 
 import java.util.ArrayList;
 
+import base.EulerProgBase;
 import utils.Prime;
 
 /*
@@ -37,17 +38,11 @@ public class Prog27_QuadraticPrimes extends EulerProgBase {
 		System.out.println(new Prog27_QuadraticPrimes().run());
 	}
 
-	@Override
-	public String run() {
-		return BruteForce() + ReduceSpace();
-	}
-
-	private String BruteForce() {
+	public String BruteForce() {
 		// String.valueOf(this.quadPrimes(1, 41));
 		// return String.valueOf(this.quadPrimes(1, 41));
 		long longest = 0;
 		int a = 0, b = 0;
-		super.start();
 		for (int i = -1000; i <= 1000; ++i) {
 			for (int j = -1000; j <= 1000; ++j) {
 				int ret = quadPrimes(i, j);
@@ -58,15 +53,13 @@ public class Prog27_QuadraticPrimes extends EulerProgBase {
 				}
 			}
 		}
-		super.elapse();
 		return String.valueOf(longest) + "a:" + a + "b:" + b + "a*b=" + a * b;
 	}
 
 	/*test only primes*/
-	private String ReduceSpace() {
+	public String Smart() {
 		long longest = 0;
 		int a = 0, b = 0;
-		super.start();
 		ArrayList<Long> p = Prime.ESieve(1000);
 		for (int i = -1000; i <= 1000; ++i) {
 			for (long j :p) {
@@ -81,7 +74,6 @@ public class Prog27_QuadraticPrimes extends EulerProgBase {
 				}
 			}
 		}
-		super.elapse();
 		return String.valueOf(longest) + "a:" + a + "b:" + b + "a*b=" + a * b;
 	}
 

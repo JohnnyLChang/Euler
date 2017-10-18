@@ -2,6 +2,8 @@ package E001;
 
 import java.math.BigInteger;
 
+import base.EulerProg;
+
 public class Prog25_1000DigitsFib extends Father implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println(new Prog25_1000DigitsFib().run());

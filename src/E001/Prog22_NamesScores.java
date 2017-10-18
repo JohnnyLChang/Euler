@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import base.EulerProg;
+
 public class Prog22_NamesScores implements EulerProg{
 	
 	private String[] names;

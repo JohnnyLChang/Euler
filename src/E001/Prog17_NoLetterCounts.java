@@ -1,5 +1,7 @@
 package E001;
 
+import base.EulerProg;
+
 public class Prog17_NoLetterCounts implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println(new Prog17_NoLetterCounts().run());

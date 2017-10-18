@@ -1,5 +1,7 @@
 package E001;
 
+import base.EulerProg;
+
 class Father {
 	int x = 100;
 }

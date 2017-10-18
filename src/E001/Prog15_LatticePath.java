@@ -1,5 +1,7 @@
 package E001;
 
+import base.EulerProg;
+
 public class Prog15_LatticePath implements EulerProg {
 	public static void main(String[] args) {
 		System.out.println(new Prog15_LatticePath().run());
