@@ -3,15 +3,16 @@ package utils.collection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 
-public class Combination<T> implements Iterable<List<T>> {
+public class CombinationRepeat<T> implements Iterable<List<T>> {
     private final T[] v;
     private final int[] idxArray;
     private final Integer n, k, id​x;
     private final IterationOrder iteratorOrder;
     
-    public Combination(T[] v, Integer k) {
+    public CombinationRepeat(T[] v, Integer k) {
         this.v = v;
         this.n = v.length;
         this.k = k;
@@ -19,23 +20,26 @@ public class Combination<T> implements Iterable<List<T>> {
         this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
         idxArray = new int[k];
 		for(int i=0; i<k; ++i)
-			idxArray[i] = i;
-		idxArray[k-1] = this.id​x - 1;
+			idxArray[i] = 0;
+		idxArray[k-1] = -1;
     }
 
     class ArrayIterator implements Iterator<List<T>> {
         int cnt = 0;
-
+        int curPos = 0;
         public boolean hasNext() {
-        	return idxArray[0] < n - k;
+        	for(int i : idxArray) {
+        		if(i < n - 1) return true;
+        	}
+        	return false;
         }
         
         public int position() {
         	for(int i=1; i <= k ; ++i) {
-    			if (idxArray[k-i] < n - i)
+    			if (idxArray[k-i] < n-1)
     				return k-i;
     		}
-    		return -1;
+        	throw new NoSuchElementException("no element");
         }
 
         public List<T> next() {
@@ -43,9 +47,12 @@ public class Combination<T> implements Iterable<List<T>> {
     			return null;
     		int pos = position();
     		idxArray[pos]++;
+    		if(curPos != pos) {
+    			curPos = pos;
+    			for(int j=pos+1;j<k;++j)
+    				idxArray[j] = idxArray[j-1];
+    		}
     		cnt++;
-    		for(int j=pos+1; j<k ; ++j)
-    			idxArray[j] = idxArray[j - 1] + 1;
     		
     		List<T> ret = new ArrayList<>();
     		for(int t : idxArray)
