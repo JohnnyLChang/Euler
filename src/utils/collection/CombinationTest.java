@@ -42,6 +42,39 @@ public class CombinationTest {
 	}
 	
 	@Test
+	public void testInteger3() {
+		// create an array of strings
+        Integer[] nums = new Integer[]{1, 2, 3, 4, 5};
+
+        // create a new array to hold these strings
+        Combination<Integer> array = new Combination<Integer>(nums, 4);
+        Iterator<List<Integer>> it = array.iterator();
+        int cnt = 0;
+        
+        for(List<Integer> l : array) {
+        	cnt++;
+        }
+        assertEquals(5, cnt);
+	}
+	
+	@Test
+	public void testInteger4() {
+		// create an array of strings
+        Integer[] nums = new Integer[]{1, 2, 3, 4, 5};
+
+        // create a new array to hold these strings
+        Combination<Integer> array = new Combination<Integer>(nums, 5);
+        Iterator<List<Integer>> it = array.iterator();
+        int cnt = 0;
+        
+        for(List<Integer> l : array) {
+        	cnt++;
+        }
+        assertEquals(1, cnt);
+	}
+	
+	
+	@Test
 	public void testString() {
 		// create an array of strings
         String[] nums = new String[]{"aaa", "bbb", "ccc", "ddd", "eeee"};

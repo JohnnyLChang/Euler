@@ -5,18 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class Permutation<T> implements Iterable<List<T>> {
-	private final T[] v;
-	private final int[] idxArray;
-	private final Integer n, k, id​x;
-	private final IterationOrder iteratorOrder;
+public class Permutation<T> extends PermuteBase<T> {
 
 	public Permutation(T[] v, Integer k) {
-		this.v = v;
-		this.n = v.length;
-		this.k = k;
-		this.id​x = k - 1;
-		this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
+		super(v, k);
 		idxArray = new int[k];
 		for (int i = 0; i < k; ++i)
 			idxArray[i] = i;
@@ -59,48 +51,7 @@ public class Permutation<T> implements Iterable<List<T>> {
 		}
 	}
 
-	public T get(int index) {
-		return v[index];
-	}
-
-	/**
-	 * Gets the size of the set from which combinations are drawn.
-	 *
-	 * @return the size of the universe.
-	 */
-	public int getN() {
-		return this.v.length;
-	}
-
-	/**
-	 * Gets the number of elements in each combination.
-	 *
-	 * @return the size of the subsets to be enumerated.
-	 */
-	public int getK() {
-		return this.k;
-	}
-
-	public void set(int index, T value) {
-		v[index] = value;
-	}
-
-	public int length() {
-		return v.length;
-	}
-
 	public Iterator<List<T>> iterator() {
 		return new ArrayIterator();
-	}
-
-	public void printPretty(List<T> v) {
-		String s = "";
-		for (T t : v)
-			s += String.valueOf(t) + ",";
-		System.out.println(s.substring(0, s.length() - 1));
-	}
-
-	private enum IterationOrder {
-		LEXICOGRAPHIC
 	}
 }
