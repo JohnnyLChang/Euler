@@ -34,4 +34,24 @@ public class Prime {
         }
         return primelist;
 	}
+	
+	public static int gcd(int a, int b) {
+		int y, x;
+
+		if (a > b) {
+			x = a;
+			y = b;
+		} else {
+			x = b;
+			y = a;
+		}
+
+		while (x % y != 0) {
+			int temp = x;
+			x = y;
+			y = temp % x;
+		}
+
+		return y;
+	}
 }
