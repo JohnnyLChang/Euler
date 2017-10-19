@@ -21,10 +21,9 @@ public class PermutationTest {
 		int cnt = 0;
 
 		for (List<Integer> l : array) {
-			array.printPretty(l);
 			cnt++;
 		}
-		assertEquals(6, cnt);
+		assertEquals(60, cnt);
 	}
 	
 	@Test
@@ -39,10 +38,9 @@ public class PermutationTest {
 		int cnt = 0;
 
 		for (List<Integer> l : array) {
-			array.printPretty(l);
 			cnt++;
 		}
-		assertEquals(24, cnt);
+		assertEquals(120, cnt);
 	}
 
 }

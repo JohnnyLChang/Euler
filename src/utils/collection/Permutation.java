@@ -3,7 +3,6 @@ package utils.collection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class Permutation<T> extends PermuteBase<T> {
 
@@ -18,6 +17,15 @@ public class Permutation<T> extends PermuteBase<T> {
 		int cnt = 0;
 		boolean bnext = true;
 		int tail = k - 1;
+		Combination<T> candi;
+		Iterator<T> candiItr;
+		List<T> v;
+		
+		public ArrayIterator() {
+			candi = new Combination<T>(Permutation.this.v, k);
+			candiItr = candi.iterator();
+			v = (List<T>) candiItr.next();
+		}
 
 		public boolean hasNext() {
 			return bnext;
@@ -36,6 +44,12 @@ public class Permutation<T> extends PermuteBase<T> {
 						}
 					}
 				}
+			}
+			if(candiItr.hasNext()) {
+				v = (List<T>) candiItr.next();
+				for (int i = 0; i < k; ++i)
+					idxArray[i] = i;
+				bnext = true;
 			}
 		}
 
@@ -56,7 +70,7 @@ public class Permutation<T> extends PermuteBase<T> {
 
 			List<T> ret = new ArrayList<>();
 			for (int t : idxArray)
-				ret.add(v[t]);
+				ret.add(v.get(t));
 
 			chkNext();
 			return ret;
