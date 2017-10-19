@@ -11,29 +11,44 @@ public abstract class PermuteBase<T> implements Iterable<List<T>> {
 	protected int[] idxArray;
 	protected Integer n, k, id​x;
 	protected IterationOrder iteratorOrder;
-	
+
 	public PermuteBase() {
 		this.v = null;
 		this.idxArray = null;
-		this.n=0; this.k=0;
+		this.n = 0;
+		this.k = 0;
 		this.id​x = 0;
-        this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
+		this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
 
 	}
 
 	public PermuteBase(T[] v, Integer k) {
-	        this.v = v;
-	        this.n = v.length;
-	        this.k = k;
-	        this.id​x = k - 1;
-	        this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
-	        idxArray = new int[k];
-	    }
+		this.v = v;
+		this.n = v.length;
+		this.k = k;
+		this.id​x = k - 1;
+		this.iteratorOrder = IterationOrder.LEXICOGRAPHIC;
+		idxArray = new int[k];
+	}
 
 	public T get(int index) {
 		return v[index];
 	}
 
+	class ArrayIterator implements Iterator<List<T>> {
+
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public List<T> next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
 	/**
 	 * Gets the size of the set from which combinations are drawn.
@@ -61,7 +76,9 @@ public abstract class PermuteBase<T> implements Iterable<List<T>> {
 		return v.length;
 	}
 
-	public abstract Iterator<List<T>> iterator();
+	public Iterator<List<T>> iterator() {
+		return new ArrayIterator();
+	}
 
 	public void printPretty(List<T> v) {
 		String s = "";

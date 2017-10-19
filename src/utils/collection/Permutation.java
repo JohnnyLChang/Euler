@@ -12,41 +12,53 @@ public class Permutation<T> extends PermuteBase<T> {
 		idxArray = new int[k];
 		for (int i = 0; i < k; ++i)
 			idxArray[i] = i;
-		idxArray[k - 1] = this.id​x - 1;
 	}
 
 	class ArrayIterator implements Iterator<List<T>> {
 		int cnt = 0;
+		boolean bnext = true;
+		int tail = k - 1;
 
 		public boolean hasNext() {
-			for (int i = k - 1; i >= 0; ++i) {
-				if(idxArray[i] != n - k)
-					return true;
-			}
-			return false;
+			return bnext;
 		}
 
-		public int position() {
-			for (int i = 1; i <= k; ++i) {
-				if (idxArray[k - i] < n - i)
-					return k - i;
+		private void chkNext() {
+			bnext = false;
+			for (int i = idxArray.length - 2; i >= 0; i--) {
+				if (idxArray[i] < idxArray[i + 1]) {
+					for (int j = idxArray.length - 1; j > i; j--) {
+						if (idxArray[i] < idxArray[j]) {
+							swap(i, j);
+							reverse(i + 1, idxArray.length - 1);
+							bnext = true;
+							return;
+						}
+					}
+				}
 			}
-			throw new NoSuchElementException("no element");
+		}
+
+		private void swap(int l, int r) {
+			idxArray[l] = idxArray[l] ^ idxArray[r];
+			idxArray[r] = idxArray[r] ^ idxArray[l];
+			idxArray[l] = idxArray[l] ^ idxArray[r];
+		}
+
+		private void reverse(int l, int r) {
+			while (l < r)
+				swap(l++, r--);
 		}
 
 		public List<T> next() {
 			if (!this.hasNext())
 				return null;
-			int pos = position();
-			idxArray[pos]++;
-			cnt++;
-			for (int j = pos + 1; j < k; ++j)
-				idxArray[j] = idxArray[j - 1] + 1;
 
 			List<T> ret = new ArrayList<>();
 			for (int t : idxArray)
 				ret.add(v[t]);
 
+			chkNext();
 			return ret;
 		}
 	}
