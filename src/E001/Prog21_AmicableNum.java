@@ -1,10 +1,7 @@
 package E001;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.function.Function;
+import java.util.List;
 
 import base.EulerProg;
 

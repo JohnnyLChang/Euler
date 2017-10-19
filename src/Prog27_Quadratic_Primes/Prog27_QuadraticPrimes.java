@@ -3,7 +3,7 @@ package Prog27_Quadratic_Primes;
 import java.util.ArrayList;
 
 import base.EulerProgBase;
-import utils.Prime;
+import utils.Prime.Prime;
 
 /*
 Euler discovered the remarkable quadratic formula:

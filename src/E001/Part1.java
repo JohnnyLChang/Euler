@@ -2,11 +2,7 @@ package E001;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
-
-import javax.annotation.processing.Processor;
 
 public class Part1 {
 	public static void N001_Multiples35() {

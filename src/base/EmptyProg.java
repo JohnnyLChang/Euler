@@ -1,7 +1,5 @@
 package base;
 
-import base.EulerProgBase;
-
 public class EmptyProg extends EulerProgBase {
 	public static void main(String[] args) {
 		System.out.println(new EmptyProg().run());

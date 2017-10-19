@@ -1,4 +1,4 @@
-package utils;
+package utils.Prime;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;

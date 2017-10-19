@@ -1,7 +1,5 @@
 package E001;
 
-import java.util.Arrays;
-
 import base.EulerProg;
 
 /*
