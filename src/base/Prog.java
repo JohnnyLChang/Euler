@@ -1,8 +1,8 @@
 package base;
 
-public class EmptyProg extends EulerProgBase {
+public class Prog extends EulerProgBase {
 	public static void main(String[] args) {
-		System.out.println(new EmptyProg().run());
+		System.out.println(new Prog().run());
 	}
 	
 	@Override
