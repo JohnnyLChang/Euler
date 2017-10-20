@@ -4,21 +4,35 @@ import java.math.BigInteger;
 
 public class Euler {
 	public static BigInteger recfact(long start, long n) {
-	    long i;
-	    if (n <= 16) { 
-	    	BigInteger r = BigInteger.valueOf(start);
-	        for (i = start + 1; i < start + n; i++)
-	        	r  = r.multiply(BigInteger.valueOf(i));
-	        return r;
-	    }
-	    i = n / 2;
-	    return recfact(start, i).multiply(recfact(start + i, n - i));
+		long i;
+		if (n <= 16) {
+			BigInteger r = BigInteger.valueOf(start);
+			for (i = start + 1; i < start + n; i++)
+				r = r.multiply(BigInteger.valueOf(i));
+			return r;
+		}
+		i = n / 2;
+		return recfact(start, i).multiply(recfact(start + i, n - i));
 	}
-	
+
 	public static boolean isPandigital(int n) {
 		return isPandigital(new Long(n));
 	}
-	
+
+	public static long toInteger(int[] digits) {
+		long result = 0;
+		for (int x : digits)
+			result = result * 10 + x;
+		return result;
+	}
+
+	public static long toInteger(int[] digits, int s, int l) {
+		long result = 0;
+		for (int x = s; x < s + l; ++x)
+			result = result * 10 + digits[x];
+		return result;
+	}
+
 	public static int alphabeticalIdx(String s) {
 		int sum = 0;
 		for (int i = 0; i < s.length(); i++) {
@@ -29,29 +43,30 @@ public class Euler {
 		}
 		return sum;
 	}
-	
+
 	public static boolean isPandigital(Long n) {
-        int digits = 0;
-        int count = 0;
-        int tmp;
+		int digits = 0;
+		int count = 0;
+		int tmp;
 
-        while (n > 0) {
-            tmp = digits;
-            //The minus one is there to make 1 fill the first bit and so on
-            digits = digits | 1 << (int)((n % 10) - 1); 
+		while (n > 0) {
+			tmp = digits;
+			// The minus one is there to make 1 fill the first bit and so on
+			digits = digits | 1 << (int) ((n % 10) - 1);
 
-          //Check to see if the same digit is found multiple times
-            if (tmp == digits) { 
-                return false;
-            }
+			// Check to see if the same digit is found multiple times
+			if (tmp == digits) {
+				return false;
+			}
 
-            count++;
-            n /= 10;
-        }
+			count++;
+			n /= 10;
+		}
 
-        return digits == (1 << count) - 1;
-    }
+		return digits == (1 << count) - 1;
+	}
 
-	
-	public static BigInteger factorial(long n) { return recfact(1, n); }
+	public static BigInteger factorial(long n) {
+		return recfact(1, n);
+	}
 }
