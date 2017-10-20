@@ -28,7 +28,12 @@ public class Prime {
         }
 
         int primes = 0;
-        for (long i = n; i >= 1; i--) {
+        /*for (long i = n; i >= 1; i--) {
+            if (isPrime[(int)i])
+            	primelist.add(i);
+        }*/
+        
+        for (long i = 1; i <= n; ++i) {
             if (isPrime[(int)i])
             	primelist.add(i);
         }
