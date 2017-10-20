@@ -19,6 +19,17 @@ public class Euler {
 		return isPandigital(new Long(n));
 	}
 	
+	public static int alphabeticalIdx(String s) {
+		int sum = 0;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c < 'A' || c > 'Z')
+				throw new IllegalArgumentException();
+			sum += c - 'A' + 1;
+		}
+		return sum;
+	}
+	
 	public static boolean isPandigital(Long n) {
         int digits = 0;
         int count = 0;
