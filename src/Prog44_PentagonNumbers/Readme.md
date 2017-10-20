@@ -29,3 +29,8 @@ Find the pair of pentagonal numbers, Pj and Pk, for which their sum and differen
  1 22
  5 22
  12 22
+ 
+ 
+ 1. 簡單的數式可以直接展開,執行效率快
+ 2. 要會找出reverse function
+ ![reverse](http://www.mathblog.dk/wp-content/plugins/optimized-latex/image.php?image=tex_933c109f314c06643746209137c1b30a.png)
