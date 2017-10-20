@@ -60,7 +60,7 @@ public class Prog27_QuadraticPrimes extends EulerProgBase {
 	public String Smart() {
 		long longest = 0;
 		int a = 0, b = 0;
-		ArrayList<Long> p = Prime.ESieve(1000);
+		ArrayList<Long> p = Prime.ESieve(1000L);
 		for (int i = -1000; i <= 1000; ++i) {
 			for (long j :p) {
 				for(int k = 0;k<2;k++) {

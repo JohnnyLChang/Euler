@@ -50,7 +50,7 @@ public class Prog extends EulerProgBase {
 
 	@Override
 	public String BruteForce() {
-		ArrayList<Long> p = Prime.ESieve(10000000);
+		ArrayList<Long> p = Prime.ESieve(10000000L);
 		for (Long pp : p) {
 			if (Euler.isPandigital(pp))
 				return String.valueOf(pp);
