@@ -20,6 +20,14 @@ public class Prog extends EulerProgBase {
 		}
 		return true;
 	}
+	
+	
+	private void CircularString() {
+		String s = Integer.toString(357);
+		for (int i = 0; i < s.length(); i++) {
+			System.out.println(s.substring(i) + s.substring(0, i));
+		}
+	}
 
 	// There are thirteen such primes below
 	// 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
@@ -36,6 +44,7 @@ public class Prog extends EulerProgBase {
 	@Override
 	public String Smart() {
 		long sum = 0;
+		CircularString();
 		return String.valueOf(sum);
 	}
 

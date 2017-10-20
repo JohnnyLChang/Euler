@@ -47,8 +47,6 @@ public class Prog extends EulerProgBase {
 					tmp += (long) Math.pow(x, 5);
 				}
 				if (tokenCompare(a.toString(l), tmp)) {
-					a.printPretty(l);
-					System.out.println(tmp);
 					sum += tmp;
 				}
 			}
