@@ -47,12 +47,12 @@ public class Prog extends EulerProgBase {
 		        }
 		    }
 		}
-		for(int i=0;i<=nlimit;++i) {
+		/*for(int i=0;i<=nlimit;++i) {
 			for(int j=0;j<=nlimit/2;++j) {
 				System.out.print(pascalTriangle[i][j] + " ");
 			}
 			System.out.println();
-		}
+		}*/
 		return String.valueOf(result);
 	}
 
