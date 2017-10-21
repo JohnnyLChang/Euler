@@ -4,6 +4,13 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 public class Euler {
+	
+	//Fast Factorial Function
+	public static BigInteger factorial(long n) {
+		return recfact(1, n);
+	}
+	
+	//http://www.luschny.de/math/factorial/FastFactorialFunctions.htm
 	public static BigInteger recfact(long start, long n) {
 		long i;
 		if (n <= 16) {
@@ -24,10 +31,6 @@ public class Euler {
 		return Arrays.equals(xdigits, ydigits);
 	}
 	
-	public static boolean isPandigital(int n) {
-		return isPandigital(new Long(n));
-	}
-
 	public static long toInteger(int[] digits) {
 		long result = 0;
 		for (int x : digits)
@@ -53,6 +56,11 @@ public class Euler {
 		return sum;
 	}
 
+	//泛位數（疑音譯自英文英语：Pandigital Number）又稱十全數，指其組成的各位數字的位數包含0-9的數字的數 
+	public static boolean isPandigital(int n) {
+		return isPandigital(new Long(n));
+	}
+
 	public static boolean isPandigital(Long n) {
 		int digits = 0;
 		int count = 0;
@@ -73,9 +81,5 @@ public class Euler {
 		}
 
 		return digits == (1 << count) - 1;
-	}
-
-	public static BigInteger factorial(long n) {
-		return recfact(1, n);
 	}
 }
