@@ -1,6 +1,7 @@
 package utils.Math;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 public class Euler {
 	public static BigInteger recfact(long start, long n) {
@@ -15,6 +16,14 @@ public class Euler {
 		return recfact(start, i).multiply(recfact(start + i, n - i));
 	}
 
+	public static boolean hasSameDigits(int x, int y) {
+		char[] xdigits = Integer.toString(x).toCharArray();
+		char[] ydigits = Integer.toString(y).toCharArray();
+		Arrays.sort(xdigits);
+		Arrays.sort(ydigits);
+		return Arrays.equals(xdigits, ydigits);
+	}
+	
 	public static boolean isPandigital(int n) {
 		return isPandigital(new Long(n));
 	}
