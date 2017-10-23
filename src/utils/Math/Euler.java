@@ -5,6 +5,32 @@ import java.util.Arrays;
 
 public class Euler {
 	
+	//Palindromic
+	public static boolean isPalindromic(long num) {
+		char[] numarr = String.valueOf(num).toCharArray();
+		for(int i=0;i<numarr.length/2;++i) {
+			if(numarr[i] != numarr[numarr.length - i - 1])
+				return false;
+		}
+		return true;
+	}
+	
+	public static <T> T reverseNum(T num) {
+		char[] numarr = String.valueOf(num).toCharArray();
+		for(int i=0;i<numarr.length/2;++i) {
+			numarr[i] ^= numarr[numarr.length - i - 1];
+			numarr[numarr.length - i - 1] ^= numarr[i];
+			numarr[i] ^= numarr[numarr.length - i - 1];
+		}
+
+	    if(num.getClass().equals(Long.class)) {
+	    	T valueOf = (T)Long.valueOf(String.valueOf(numarr));
+			return valueOf; 
+	    }
+		return null; 
+	}
+	
+	
 	//Fast Factorial Function
 	public static BigInteger factorial(long n) {
 		return recfact(1, n);

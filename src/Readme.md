@@ -46,5 +46,28 @@
 
 # Prog 53
 1. 暴力列舉法可解題,但效率不夠好
-2. 利用巴斯卡三角型可以加速計算,不用每一次都重新計算一次階乘結果
-​
+2. 利用巴斯卡三角型可以加速計算,不用每一次都重新計算每一次階乘結果,只要 nCr > Limit,
+   結果為 result += n - 2*r + 1
+
+# Prog 54 Poker Hand
+In the card game poker, a hand consists of five cards and are ranked, from lowest to highest, in the following way:
+
+    High Card: Highest value card.
+    One Pair: Two cards of the same value.
+    Two Pairs: Two different pairs.
+    Three of a Kind: Three cards of the same value.
+    Straight: All cards are consecutive values.
+    Flush: All cards of the same suit.
+    Full House: Three of a kind and a pair.
+    Four of a Kind: Four cards of the same value.
+    Straight Flush: All cards are consecutive values of same suit.
+    Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
+
+The cards are valued in the order:
+2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace. 
+
+
+
+# Prog 55
+利克瑞尔数（Lychrel Number）指的是将该数与将该数各数位逆序翻转后形成的新数相加、并将此过程反复迭代后，结果永遠無法是一个回文数的自然数。“利克瑞尔”的名字是Wade VanLandingham杜撰出的，这是从他的女友Cheryl的名字经过简单的字母换位而来。 在1至1000000的數字裡，發現有122962個不能產生迴文數字的可能性。
+
