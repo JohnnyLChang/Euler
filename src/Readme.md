@@ -71,3 +71,41 @@ The cards are valued in the order:
 # Prog 55
 利克瑞尔数（Lychrel Number）指的是将该数与将该数各数位逆序翻转后形成的新数相加、并将此过程反复迭代后，结果永遠無法是一个回文数的自然数。“利克瑞尔”的名字是Wade VanLandingham杜撰出的，这是从他的女友Cheryl的名字经过简单的字母换位而来。 在1至1000000的數字裡，發現有122962個不能產生迴文數字的可能性。
 
+# Prog 57
+Approximate Solution
+
+We know from the problem description that the first time we encounter a numerator with more digits than the denominator is after 8 expansions. For some reason this got me a bit curious to see when the next solution would arise. This happens after expansion 13 and then after 21 and 26. So after a few iterations a pattern started emerging that we would have 8,5,8,5,8,5 expansions between the solutions to the problem. I tried to iterate several more times and got the following
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+	
+1234567x1234x1234567x1234x
+1234567x1234x1234567x
+1234567x1234x1234567x1234x
+1234567x1234x12x1234x
+1234567x1234x1234567x1234x
+1234567x1234567x1234x
+1234567x1234x1234567x1234x
+1234567x1234567x1234x
+1234567x1234x1234567x
+1234567x1234x1234567x1234x
+1234567x1234x1234567x
+
+which shows that there is a trend of 13 solutions per 13 expansions, but the pattern is not completely regular. However, for fun and giggles lets try to assume that the pattern was regular and see how close we get. We could form a solution looking like
+
+f(x) =\left\{\begin{array}{ll} 2\lfloor x / 13\rfloor & \text{if } x \text{ mod } 13 < 8,\\ 2\lfloor x / 13\rfloor 1 & \text{otherwise}\end{array} \right.
+
+where the x is the limit and the \lfloor\ \rfloor means floor.
+
+Plotting the error term of this approximation against the actual value of problem shows that the approximation is within +/- 1 of the actual solution.
+
+In 68% of the cases between 1 and 1000 it hits the target, in 8,4% it shoots 1 above and in 23,6% it is just one short. For the value 1000 it hits spot on. So even if it is not a completely accurate approximation it is rather close.
+
