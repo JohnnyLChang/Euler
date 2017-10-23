@@ -34,7 +34,7 @@ public class Prog extends EulerProgBase {
 		return Integer.toString(sum);
 	}
 
-	// Heuristical scoring function. The current implementation returns only
+	// Heuristical scoring func107359tion. The current implementation returns only
 	// integral values, but floating-point values are legal too.
 	private static double score(byte[] b) {
 		double sum = 0;
