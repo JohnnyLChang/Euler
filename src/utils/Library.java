@@ -335,96 +335,90 @@ public final class Library {
 		return true;
 	}
 	
-}
-
-
-
-// Immutable unlimited precision fraction
-final class Fraction implements Comparable<Fraction> {
-	
-	public static final Fraction ZERO = new Fraction(BigInteger.ZERO);
-	
-	
-	public final BigInteger numerator;    // Always coprime with denominator
-	public final BigInteger denominator;  // Always positive
-	
-	
-	public Fraction(BigInteger numer) {
-		numerator = numer;
-		denominator = BigInteger.ONE;
-	}
-	
-	
-	public Fraction(BigInteger numer, BigInteger denom) {
-		if (denom.signum() == 0)
-			throw new ArithmeticException("Division by zero");
+	// Immutable unlimited precision fraction
+	public static final class Fraction implements Comparable<Fraction> {
+		public final BigInteger numerator;    // Always coprime with denominator
+		public final BigInteger denominator;  // Always positive
 		
-		// Reduce to canonical form
-		if (denom.signum() == -1) {
-			numer = numer.negate();
-			denom = denom.negate();
-		}
-		BigInteger gcd = numer.gcd(denom);
-		if (!gcd.equals(BigInteger.ONE)) {
-			numer = numer.divide(gcd);
-			denom = denom.divide(gcd);
+		
+		public Fraction(BigInteger numer) {
+			numerator = numer;
+			denominator = BigInteger.ONE;
 		}
 		
-		numerator = numer;
-		denominator = denom;
+		
+		public Fraction(BigInteger numer, BigInteger denom) {
+			if (denom.signum() == 0)
+				throw new ArithmeticException("Division by zero");
+			
+			// Reduce to canonical form
+			if (denom.signum() == -1) {
+				numer = numer.negate();
+				denom = denom.negate();
+			}
+			BigInteger gcd = numer.gcd(denom);
+			if (!gcd.equals(BigInteger.ONE)) {
+				numer = numer.divide(gcd);
+				denom = denom.divide(gcd);
+			}
+			
+			numerator = numer;
+			denominator = denom;
+		}
+		
+		
+		public Fraction add(Fraction other) {
+			return new Fraction(
+				numerator.multiply(other.denominator).add(other.numerator.multiply(denominator)),
+				denominator.multiply(other.denominator));
+		}
+		
+		
+		public Fraction subtract(Fraction other) {
+			return new Fraction(
+				numerator.multiply(other.denominator).subtract(other.numerator.multiply(denominator)),
+				denominator.multiply(other.denominator));
+		}
+		
+		
+		public Fraction multiply(Fraction other) {
+			return new Fraction(
+				numerator.multiply(other.numerator),
+				denominator.multiply(other.denominator));
+		}
+		
+		
+		public Fraction divide(Fraction other) {
+			return new Fraction(
+				numerator.multiply(other.denominator),
+				denominator.multiply(other.numerator));
+		}
+		
+		
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Fraction))
+				return false;
+			Fraction other = (Fraction)obj;
+			return numerator.equals(other.numerator)
+				&& denominator.equals(other.denominator);
+		}
+		
+		
+		public int compareTo(Fraction other) {
+			return numerator.multiply(other.denominator)
+				.compareTo(other.numerator.multiply(denominator));
+		}
+		
+		
+		public int hashCode() {
+			return numerator.hashCode() + denominator.hashCode();
+		}
+		
+		
+		public String toString() {
+			return numerator + "/" + denominator;
+		}
+		
 	}
-	
-	
-	public Fraction add(Fraction other) {
-		return new Fraction(
-			numerator.multiply(other.denominator).add(other.numerator.multiply(denominator)),
-			denominator.multiply(other.denominator));
-	}
-	
-	
-	public Fraction subtract(Fraction other) {
-		return new Fraction(
-			numerator.multiply(other.denominator).subtract(other.numerator.multiply(denominator)),
-			denominator.multiply(other.denominator));
-	}
-	
-	
-	public Fraction multiply(Fraction other) {
-		return new Fraction(
-			numerator.multiply(other.numerator),
-			denominator.multiply(other.denominator));
-	}
-	
-	
-	public Fraction divide(Fraction other) {
-		return new Fraction(
-			numerator.multiply(other.denominator),
-			denominator.multiply(other.numerator));
-	}
-	
-	
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Fraction))
-			return false;
-		Fraction other = (Fraction)obj;
-		return numerator.equals(other.numerator)
-			&& denominator.equals(other.denominator);
-	}
-	
-	
-	public int compareTo(Fraction other) {
-		return numerator.multiply(other.denominator)
-			.compareTo(other.numerator.multiply(denominator));
-	}
-	
-	
-	public int hashCode() {
-		return numerator.hashCode() + denominator.hashCode();
-	}
-	
-	
-	public String toString() {
-		return numerator + "/" + denominator;
-	}
-	
 }
+
