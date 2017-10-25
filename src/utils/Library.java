@@ -300,6 +300,7 @@ public final class Library {
 		
 		for (int i = 2; i <= n; i++) {
 			if (result[i] == i) {  // i is prime
+				
 				for (int j = i; j <= n; j += i)
 					result[j] -= result[j] / i;
 			}
