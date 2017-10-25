@@ -33,7 +33,7 @@ public class Prog extends EulerProgBase {
 		for (int i = n - 1; i > 1; --i) {
 			BigInteger tmp = number;
 			number = denominator;
-			denominator = denominator.multiply(BigInteger.valueOf(MathConstant(i))).add(tmp);
+			denominator = BigInteger.valueOf(MathConstant(i)).multiply(denominator).add(tmp);
 		}
 		number = denominator.multiply(BigInteger.valueOf(a0)).add(number);
 
