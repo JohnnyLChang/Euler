@@ -1,5 +1,7 @@
 package Prog65_ConvergentsOfE;
 
+import java.math.BigInteger;
+
 import base.EulerProgBase;
 
 public class Prog extends EulerProgBase {
@@ -7,12 +9,12 @@ public class Prog extends EulerProgBase {
 		System.out.println(new Prog().run());
 	}
 
-	final int head = 2;
+	final int LIMIT = 100;
 
-	int MathConstant(int n) {
+	long MathConstant(int n) {
 		switch (n % 3) {
-		case 2:
-			return 2 * (n / 3 + 1);
+		case 0:
+			return 2 * (n / 3);
 		default:
 			return 1;
 		}
@@ -24,39 +26,55 @@ public class Prog extends EulerProgBase {
 		System.out.println();
 	}
 
-	void Convergents(int n) {
-		n--;
+	int Convergents(int n) {
 		int a0 = 2;
-		int number = 1;
-		int denominator = MathConstant(n);
-		for (int i = n - 1; i > 0; --i) {
-			int tmp = number;
+		BigInteger number = BigInteger.ONE;
+		BigInteger denominator = BigInteger.valueOf(MathConstant(n));
+		for (int i = n - 1; i > 1; --i) {
+			BigInteger tmp = number;
 			number = denominator;
-			denominator = MathConstant(i) * denominator + tmp;
+			denominator = denominator.multiply(BigInteger.valueOf(MathConstant(i))).add(tmp);
 		}
-		number = a0 * denominator + number;
-		System.out.println("n:" + ++n + " " + number + "/" + denominator);
+		number = denominator.multiply(BigInteger.valueOf(a0)).add(number);
+
+		int sum = 0;
+		for (char c : number.toString().toCharArray())
+			sum += Character.getNumericValue(c);
+		return sum;
 	}
 
 	@Override
 	public String BruteForce() {
-		dumpC(10);
 		long sum = 0;
-		Convergents(1);
-		Convergents(2);
-		Convergents(3);
-		// Convergents(4);
-		Convergents(8);
-		Convergents(9);
 		Convergents(10);
-		System.out.println();
-		return String.valueOf(sum);
+		return String.valueOf(Convergents(100));
 	}
 
 	@Override
 	public String Smart() {
-		long sum = 0;
-		return String.valueOf(sum);
+		BigInteger n = BigInteger.ONE;
+		BigInteger d = BigInteger.ZERO;
+		for (int i = LIMIT-1; i >= 0; i--) {
+			BigInteger temp = BigInteger.valueOf(continuedFractionTerm(i)).multiply(n).add(d);
+			d = n;
+			n = temp;
+		}
+
+		int sum = 0;
+		while (!n.equals(BigInteger.ZERO)) {
+			BigInteger[] divrem = n.divideAndRemainder(BigInteger.TEN);
+			sum += divrem[1].intValue();
+			n = divrem[0];
+		}
+		return Integer.toString(sum);
 	}
 
+	private static int continuedFractionTerm(int i) {
+		if (i == 0)
+			return 2;
+		else if (i % 3 == 2)
+			return i / 3 * 2 + 2;
+		else
+			return 1;
+	}
 }
