@@ -111,3 +111,9 @@ In 68% of the cases between 1 and 1000 it hits the target, in 8,4% it shoots 1 a
 
 # Prog 64 Odd period square roots
 所有平方根值都俱有循環的特性,可以表示為連續的分數
+
+# Prog 66
+http://mathworld.wolfram.com/PellEquation.html
+我無言了.....  完全沒練習也沒認真.....
+
+# Prog 67
