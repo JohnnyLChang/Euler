@@ -109,3 +109,5 @@ Plotting the error term of this approximation against the actual value of proble
 
 In 68% of the cases between 1 and 1000 it hits the target, in 8,4% it shoots 1 above and in 23,6% it is just one short. For the value 1000 it hits spot on. So even if it is not a completely accurate approximation it is rather close.
 
+# Prog 64 Odd period square roots
+所有平方根值都俱有循環的特性,可以表示為連續的分數
