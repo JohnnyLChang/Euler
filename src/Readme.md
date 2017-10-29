@@ -116,4 +116,13 @@ In 68% of the cases between 1 and 1000 it hits the target, in 8,4% it shoots 1 a
 http://mathworld.wolfram.com/PellEquation.html
 我無言了.....  完全沒練習也沒認真.....
 
-# Prog 67
+# Prog 612 Friend Numbers
+
+Let's call two numbers friend numbers if their representation in base 10 has at least one common digit.
+E.g. 1123 and 3981 are friend numbers.
+
+Let f(n)
+be the number of pairs (p,q) with 1≤p<q<n such that p and q are friend numbers.
+f(100)=1539
+
+Find f(1018) mod 1000267129. 

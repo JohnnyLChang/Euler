@@ -155,6 +155,15 @@ public final class Library {
 		return prod;
 	}
 	
+	public static BigInteger factorial(BigInteger n) {
+		if (n.compareTo(BigInteger.ZERO) < 0)
+			throw new IllegalArgumentException("Factorial of negative number");
+		BigInteger prod = BigInteger.ONE;
+		for (BigInteger i = BigInteger.valueOf(2); i.compareTo(n) <= 0; i = i.add(BigInteger.ONE))
+			prod = prod.multiply(i);
+		return prod;
+	}
+	
 	
 	// Returns n choose k.
 	public static BigInteger binomial(int n, int k) {
@@ -163,6 +172,15 @@ public final class Library {
 		BigInteger product = BigInteger.ONE;
 		for (int i = 0; i < k; i++)
 			product = product.multiply(BigInteger.valueOf(n - i));
+		return product.divide(factorial(k));
+	}
+	
+	public static BigInteger binomialBig(BigInteger n, BigInteger k) {
+		if (k.compareTo(BigInteger.ZERO) < 0 || k.compareTo(n) >= 0)
+			throw new IllegalArgumentException();
+		BigInteger product = BigInteger.ONE;
+		for (BigInteger i = BigInteger.ZERO; i.compareTo(k) < 0; i = i.add(BigInteger.ONE))
+			product = product.multiply(n.subtract(i));
 		return product.divide(factorial(k));
 	}
 	

@@ -30,6 +30,9 @@ public class Euler {
 		return null; 
 	}
 	
+	public BigInteger Sum(BigInteger n) {
+		return n.multiply(n.min(BigInteger.ONE)).divide(BigInteger.valueOf(2));
+	}
 	
 	//Fast Factorial Function
 	public static BigInteger factorial(long n) {
