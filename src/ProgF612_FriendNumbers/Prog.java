@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 import base.EulerProgBase;
 import utils.Library;
 import utils.collection.Combination;
-import utils.collection.Permutation;
 
 public class Prog extends EulerProgBase {
 	public static void main(String[] args) {
@@ -22,6 +21,10 @@ public class Prog extends EulerProgBase {
 			digits[p % 10]++;
 			p /= 10;
 		}
+		digits[0] = 0;
+		for(int i=5;i<10;i++) {
+			digits[i] = 0;
+		}
 		while (q > 0) {
 			if (digits[q % 10] > 0)
 				return true;
@@ -30,7 +33,7 @@ public class Prog extends EulerProgBase {
 		return false;
 	}
 
-	boolean isCloseFriend(int p, int q, int n, int c) {
+	boolean isFriendOnly(int p, int q, int d) {
 		// if(String.valueOf(p).length() != 3 && String.valueOf(q).length() != 3) return
 		// false;
 		int[] digitsp = new int[10];
@@ -43,10 +46,20 @@ public class Prog extends EulerProgBase {
 			digitsq[q % 10]++;
 			q /= 10;
 		}
-		if (digitsp[n] == digitsq[n] && c == digitsq[n])
+		if (digitsp[d] > 0 && digitsq[d] > 0) {
+			for(int i=0;i<digitsp.length;++i) {
+				if(i!=d && digitsp[i] > 0 && digitsq[i] > 0)
+					return false;
+			}
 			return true;
+		}
 		return false;
-	}
+	}// if(hasdigits(it.get(0), new int[] {1,2}) && hasdigits(it.get(1), new int[]
+	// {1,2})) {
+	// System.out.println(it.get(0).toString() + ":" +it.get(1).toString());
+	// }
+	// }
+	// if(isCloseFriend(it.get(0), it.get(1), 1 , 1))
 
 	boolean hasdigits(int p, int d) {
 		while (p > 0) {
@@ -121,25 +134,30 @@ public class Prog extends EulerProgBase {
 		return new BigInteger(Library.binomial(n, k).toString());
 	}
 
-	//找出N位數中,共有D位數字的共有幾個
+	// 找出N位數中,共有D位數字的共有幾個
 	BigInteger getCommonDigits(int n, int d) {
 		if (d > n)
 			return BigInteger.ZERO;
 		BigInteger r = BigInteger.ZERO;
 		BigInteger g = getNonZeroDigits(n, d);
 		BigInteger v = BigInteger.valueOf(10 - d);
-		for (int i = 1; i < n-1; i++) {
-			r = r.add(getNonZeroDigits(n-i,d).multiply(v.pow(i).multiply(Binomial(n, i))));
+		for (int i = 1; i < n; i++) {
+			BigInteger a = Binomial(n, i);
+			BigInteger b = v.pow(i);
+			BigInteger c = getNonZeroDigits(n - i, d);
+			r = r.add(c.multiply(b.multiply(a)));
 		}
 		return r.add(g);
 	}
 
-	//找出N位數中,不是零的有幾個
+	// 找出N位數中,不是零的有幾個
 	BigInteger getNonZeroDigits(int n, int d) {
 		if (d > n)
 			return BigInteger.ZERO;
 		BigInteger[] dp = new BigInteger[n + 2];
 		BigInteger[] dpv = new BigInteger[d + 2];
+		dp[1] = BigInteger.ONE;
+		dpv[1] = BigInteger.ONE;
 		dp[2] = BigInteger.valueOf(2).multiply(BigInteger.valueOf(2).pow(n - 1).subtract(BigInteger.ONE));
 		dpv[2] = dp[2];
 		for (int i = 3; i < dp.length; ++i)
@@ -162,20 +180,20 @@ public class Prog extends EulerProgBase {
 		return noZeroCount;
 	}
 
-	//剩出小於10^N的數字中,共有D集合的數字有幾個
-	//小於 10^3, 共有 12的有幾個
+	// 剩出小於10^N的數字中,共有D集合的數字有幾個
+	// 小於 10^3, 共有 12的有幾個
 	void DumpSameDigitsTable(int nn) {
 		System.out.println("=========================");
-		for (int d = 2; d <= 9; ++d) {
-			for (int n = 2; n <= nn; ++n) {
+		for (int d = 1; d <= 9; ++d) {
+			for (int n = 1; n <= nn; ++n) {
 				System.out.print(getCommonDigits(n, d) + " ");
-				//System.out.print(this.getNonZeroDigits(j, i) + " ");
+				// System.out.print(this.getNonZeroDigits(j, i) + " ");
 			}
 			System.out.println();
 		}
 		System.out.println("=========================");
 	}
-	
+
 	void DumpZeroDigitsTable(int nn) {
 		for (int d = 2; d <= 9; ++d) {
 			for (int n = 2; n <= nn; ++n) {
@@ -204,38 +222,28 @@ public class Prog extends EulerProgBase {
 		return ret;
 	}
 
-	//利用差集原理減去多餘計算的集合
+	// 利用差集原理減去多餘計算的集合
 	void getFriendNumber(int n) {
-		BigInteger p = BigInteger.TEN.pow(n);
 		BigInteger night = BigInteger.valueOf(9);
 		BigInteger two = BigInteger.valueOf(2);
 		BigInteger r = BigInteger.ZERO;
-		BigInteger v = Library.binomialBig(countNumOfSpecificDigit(p), two);
-		System.out.println("36585 = "+v);
+		BigInteger v = Library.binomialBig(getCommonDigits(n,1), two);
+		System.out.println("36585 = " + v);
 		for (int i = 1; i < 10; ++i) {
 			r = r.add(v);
 			for (int j = 2; j <= i && j <= n; ++j) {
-				BigInteger commonSet = Library.binomialBig(getCommonDigits(n, j), BigInteger.valueOf(j));
+				BigInteger commonSet = Library.binomialBig(getCommonDigits(n, j), two);
 				commonSet = commonSet.multiply(Library.binomial(i, i));
-				commonSet = commonSet.multiply(Library.factorial(j + 1).subtract(BigInteger.ONE));
+				System.out.println(i);
+				commonSet = commonSet.multiply(Library.binomial(i-1, j-1));
 				if (j % 2 == 0)
 					r = r.subtract(commonSet);
 				else
 					r = r.add(commonSet);
 			}
+			System.out.println(r);
 		}
-		//System.out.println(r);
-		System.out.println(r.add(Library.binomialBig(countNumOfZeroDigit(p), two)));
-		BigInteger zzz = BigInteger.ZERO;
-		for (int i = 1, j = 2; i < 9; ++i) {
-			//System.out.print(ZeroPermutation(j) + "* ");
-			for (int k = 1; k < n && k < 9-i; ++k) {
-				//System.out.print(Library.binomial(10-i, k) + " ");
-			}
-			//System.out.println();
-			if (j < n)
-				j++;
-		}
+		System.out.println(r);
 	}
 
 	private int ZeroPermutation(int n) {
@@ -245,16 +253,24 @@ public class Prog extends EulerProgBase {
 	@Override
 	public String BruteForce() {
 		//DumpZeroDigitsTable(18);
-		//DumpSameDigitsTable(18);
+		DumpSameDigitsTable(18);
 		getFriendNumber(3);
 		long sum = 0;
-		/*for (int i = 0; i < 100000; i++) {
-			if (this.hasdigitscount(i, new int[] { 0, 1 , 2}, 5)) {
-				System.out.println(i);
+		/*
+		 * for (int i = 0; i < 100000; i++) { if (this.hasdigitscount(i, new int[] { 0,
+		 * 1 , 2}, 5)) { System.out.println(i); sum++; } }
+		 */
+
+		Integer[] nums = IntStream.range(1, 1000).boxed().toArray(Integer[]::new);
+		Combination<Integer> binominals = new Combination<Integer>(nums, 2);
+		for (List<Integer> it : binominals) {
+			//if (isFriendOnly(it.get(0), it.get(1), 0)) {
+				//System.out.printf("%s %s\n", it.get(0), it.get(1));
+			if(this.isFriend(it.get(0), it.get(1)))
 				sum++;
-			}
-		}*/
-		return String.valueOf("sum:" + sum);
+			//}
+		}
+		return String.valueOf(sum);
 	}
 
 	@Override
