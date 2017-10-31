@@ -71,7 +71,8 @@ public class Prog extends EulerProgBase {
 		return r.add(g);
 	}
 
-	//Count the number with only 0 and 1~D​
+	/*
+	 * Count the number with only 0 and 1~D​
 	public BigInteger funcZ_numWithZeroAnd1toD(int n, int d) {
 		if (d == 2) {
 			BigInteger t = BigInteger.ZERO;
@@ -84,7 +85,7 @@ public class Prog extends EulerProgBase {
 			return funcG_numWith1toD_Only(n, d).subtract(funcG_numWith1toD_Only(n - 1, d))
 					.subtract(funcG_numWith1toD_Only(n - 1, d - 1));
 		return BigInteger.ZERO;
-	}
+	}*/
 	
 	//Count the numbers with Zero
 	BigInteger funcZZ_numWithZero(BigInteger ub) {
