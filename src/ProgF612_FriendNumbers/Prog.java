@@ -228,7 +228,7 @@ public class Prog extends EulerProgBase {
 	}
 
 	// 利用差集原理減去多餘計算的集合
-	void getFriendNumber(int n) {
+	BigInteger getFriendNumber(int n) {
 		BigInteger r = BigInteger.ZERO;
 		BigInteger v = Library.binomialBig(funcH_numWithCommon1toD(n, 1), two);
 		int i = 1;
@@ -243,7 +243,7 @@ public class Prog extends EulerProgBase {
 					r = r.add(commonSet);
 			}
 		}
-		System.out.println(r);
+		return r.add(getFriendNumberZeroOnly(n));
 	}
 
 	BigInteger funcZZ_numWithZero(BigInteger ub) {
@@ -258,33 +258,72 @@ public class Prog extends EulerProgBase {
 	}
 
 	BigInteger getFriendNumberZeroOnly(int n) {
-		return Library.binomialBig(this.funcZZ_numWithZero(BigInteger.valueOf(n)), two);
+		//funcZZZ_numWithZeroAnd1toD
+		BigInteger allZero = Library.binomialBig(this.funcZZ_numWithZero(BigInteger.valueOf(n)), two);
+		BigInteger withNonZeroFriend = BigInteger.ZERO;
+		for(int i=1;i<=n-1 && i<10;i++) {
+			if(i%2 == 0)
+				withNonZeroFriend = withNonZeroFriend.subtract(Library.binomialBig(funcZZZ_numWithZeroAnd1toD(n, i), two).multiply(Library.binomial(9, i)));
+			else
+				withNonZeroFriend = withNonZeroFriend.add(Library.binomialBig(funcZZZ_numWithZeroAnd1toD(n, i), two).multiply(Library.binomial(9, i)));
+		}	
+		return allZero.subtract(withNonZeroFriend);
+	}
+
+	public BigInteger funcZZZ_numWithZeroAnd1toD(int n, int d) {
+		BigInteger all = BigInteger.ZERO;
+		BigInteger noZero = BigInteger.ZERO;
+		// all = this.fun
+		for (int i = 1; i <= n; ++i) {
+			noZero = funcH_numWithCommon1toD(n - i + 1, d).subtract(funcH_numWithCommon1toD(n - i + 1, d + 1))
+					.add(noZero);
+		}
+		all = this.funcH_numWithCommon1toD(n, d);
+		return all.subtract(noZero);
+	}
+
+	void DumpNoZeroWithTable(int nn) {
+		System.out.println("=========DumpDwithZeroWithTable==========");
+		BigInteger tmp = BigInteger.ZERO;
+		for (int d = 1; d < 10; ++d) {
+			for (int n = 1; n <= nn; ++n) {
+				System.out.printf("%s ", funcZZZ_numWithZeroAnd1toD(n, d));
+			}
+			System.out.println();
+		}
+		System.out.println("=========================");
 	}
 
 	@Override
 	public String BruteForce() {
-		DumpZeroDigitsTable(18);
-		DumpNonZeroDigitsTable(18);
-		DumpSameDigitsTable(18);
-		getFriendNumber(11);
 		//getFriendNumberZeroOnly(3);
+		// DumpNoZeroWithTable(18);
+		// DumpNonZeroDigitsTable(18);
+		// DumpSameDigitsTable(18);
+		for (int i = 3; i <= 18; ++i)
+			System.out.println(getFriendNumber(i));
 		long sum = 0;
-
-		Debug();
-		return String.valueOf(sum);
+		for (int i = 1000; i < 10000; i++) {
+			if (!this.hasdigits(i, new Integer[] { 0 }) && this.hasdigits(i, new Integer[] { 1 })) {
+				// System.out.println(i);
+				sum++;
+			}
+		}
+		// Debug();
+		return String.valueOf(getFriendNumber(18).mod(new BigInteger("1000267129")));
 	}
 
 	private void Debug() {
 		long sum = 0;
-		Integer[] nums = IntStream.range(1, 1000000000).boxed().toArray(Integer[]::new);
+		Integer[] nums = IntStream.range(1, 1000).boxed().toArray(Integer[]::new);
 		Combination<Integer> binominals = new Combination<Integer>(nums, 2);
 		for (List<Integer> it : binominals) {
 			// if (isFriendOnly(it.get(0), it.get(1), 0)) {
 			// System.out.printf("%s %s\n", it.get(0), it.get(1));
-			//if (this.isFriendOnly(it.get(0), it.get(1), new int[] { 1, 2, 0 })) {
+			// if (this.isFriendOnly(it.get(0), it.get(1), new int[] { 1, 2, 0 })) {
 			if (this.isFriend(it.get(0), it.get(1))) {
 				sum++;
-				//System.out.printf("%s, %s\n", it.get(0), it.get(1));
+				// System.out.printf("%s, %s\n", it.get(0), it.get(1));
 			}
 			// }
 		}
@@ -297,7 +336,7 @@ public class Prog extends EulerProgBase {
 			for (int n = 2; n < 10; ++n) {
 				sum = 0;
 				if (n >= m) {
-					for (int i = 0; i < (int)Math.pow(10, n); i++) {
+					for (int i = 0; i < (int) Math.pow(10, n); i++) {
 						if (this.hasdigits(i, IntStream.range(0, m).boxed().toArray(Integer[]::new))) {
 							// System.out.println(i);
 							sum++;
@@ -310,6 +349,7 @@ public class Prog extends EulerProgBase {
 		}
 
 	}
+
 	@Override
 	public String Smart() {
 		long sum = 0;
