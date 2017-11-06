@@ -12,8 +12,11 @@ from itertools import *
 from sets import Set
 from array import array
 from itertools import combinations
-import fractions
-import collections
+import fractions ## for gcd
+import collections ## ordered dictionary
+import pickle  ## data serialization
+
+from MyCube import *
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -37,70 +40,6 @@ ZP = np.array([[1, 1, 1],
               [1, 4, 4],
               [4, 4, 4],
               ])
-
-class MyCube:
-    def __init__(self):
-        self.name = 'Cube'
-
-    def get_cube(self, size, base=np.array([0, 0, 0])):
-        v = np.array(list(it.product((0, size), repeat=3)))
-        c = self.find_centerv(v)
-        return np.array([x - c for x in v])
-
-    def get_sampledot(self):
-        c = self.find_centerv(Z)
-        return np.array([x - c for x in Z])
-
-    def get_sampelines(self):
-        lines = []
-        verts = self.get_sampledot()
-        for i in range(0, len(verts)):
-            v = verts[i]
-            for j in range(0, len(verts)):
-                vv = verts[j]
-                if np.linalg.norm(np.abs(v - vv)) == 3:
-                    lines.append([v, vv])
-        return np.array(lines)
-
-    def get_dot(self, size, norm=True):
-        v = np.array(self.get_dot_impl(size))
-        if norm:
-            c = self.find_centerv(v)
-            return np.array([x - c for x in v])
-        return v
-
-    def get_dot_impl(self, size):
-        dots = []
-        size += 1
-        for x in range(0, size, 1):
-            for y in range(0, size, 1):
-                for z in range(0, size, 1):
-                    dots.append([x, y, z])
-        return np.array(dots)
-
-    def find_centerv(self, a):
-        max = 0
-        ret = []
-        for v in a:
-            for vv in a:
-                t = np.linalg.norm(v - vv)
-                if t > max:
-                    max = t
-                    ret = (v + vv) / (2 * 1.0)
-        return ret
-
-    def get_cubelines(self, size, verts=[],  base=np.array([0, 0, 0])):
-        lines = []
-        if len(verts) == 0:
-            verts = self.get_cube(size, base)
-        for i in range(0, len(verts)):
-            v = verts[i]
-            for j in range(0, len(verts)):
-                vv = verts[j]
-                if np.linalg.norm(np.abs(v - vv)) == size:
-                    lines.append([v, vv])
-        return np.array(lines)
-
 
 class Lattice:
     def __init__(self):
@@ -130,28 +69,30 @@ class Lattice:
         c3 = mcd.XKCD_COLORS.values()[int(cc)]
 
         eulercubic = self.cube.get_dot(size, False)
-        print eulercubic
-        #self.ax.scatter3D(
-        #    eulercubic[:, 0], eulercubic[:, 1], eulercubic[:, 2], s=59, c='g')
         cubics = self.find_cubes(size)
-        for v in cubics.keys():
-            print 'size {0}: {1}'.format(v, len(cubics[v]))
 
         i = 0
         centerV = []
-        cubic_edge = 9
-        for mycubic in cubics[cubic_edge]:
+        cubic_edge = 11
+        wanted = []
+        wanted = cubics[cubic_edge]['[2 6 9]'] + cubics[cubic_edge]['[6 6 7]']
+        for mycubic in wanted:
+            for v in mycubic:
+                if v[0] == 0:
+                    lowerx = True
+                if v[0] == 15:
+                    lowery = True
+            if not lowerx and not lowery:
+                continue
             i += 1
             colorcode = uniform(0, len(mcd.XKCD_COLORS))
             xkcd = mcd.XKCD_COLORS.values()[int(cc)]
             line = self.cube.get_cubelines(cubic_edge, mycubic)
             cubic = np.array(mycubic)
-            print cubic
             self.ax.scatter3D(cubic[:, 0], cubic[:, 1], cubic[:, 2], s=59, c='g')
             self.ax.add_collection3d(Line3DCollection(line, linewidths=1, colors=xkcd, alpha=.5))
-            if i==5:
-                break
             #centerV.append(np.array(self.cube.find_centerv(mycubic)))
+        print i
         colorcode = uniform(0, len(mcd.XKCD_COLORS))
         xkcd = mcd.XKCD_COLORS.values()[int(cc)]
         centerV = np.array(centerV)
@@ -199,6 +140,13 @@ class Lattice:
         plt.show()
 
     def find_cubes(self, size):
+        filename = 'cubic{0}.pkl'.format(size)
+        try:
+            fh = open(filename, 'rb')
+            return pickle.load(fh)
+        except (EnvironmentError, pickle.PicklingError) as err:
+            print 'file not found'
+
         allvertex = self.cube.get_dot(size, norm=False)
         vectors = []
         for i in range(0, 30):
@@ -212,7 +160,10 @@ class Lattice:
                             vectors[int(dist)][tuple(x)].append(tuple(y))
                         else:
                             vectors[int(dist)][tuple(x)] = [tuple(y)]
-        return self.get_cube(vectors, size)
+        cubes = self.get_cube(vectors, size) 
+        with open(filename, 'wb') as fh:
+            pickle.dump(cubes, fh)
+        return cubes
 
     def sort(self, vs):
         for i in range(0, len(vs)):
@@ -270,14 +221,31 @@ class Lattice:
         for i in range(2, n + 2):
             sum += math.pow(n - i + 2, 3)
 
+        ## count for Quadruple
+        quad = [(k, v) for k,v in PythagoreanQuadrupleSqrt(50).items() if k <= size*3/5]
+        for i in range(0, len(quad)):
+            count = len(quad[i][1])
+            if count == 1:
+                print quad[i][1]
+                print quad[i][1][0]
+                if quad[i][1][0] == quad[i][1][1]:
+                    print '1',4*count*math.pow(1 + diff, 3)
+                    sum += 4*count*math.pow(1 + diff, 3)
+                elif quad[i][1][0] != quad[i][1][1] and quad[i][1][1] != quad[i][1][2]:
+                    print '2',8*count*math.pow(1 + diff, 3)
+                    sum += 8*count*math.pow(1 + diff, 3)
+            elif count == 2:
+                print 4*count*math.pow(1 + diff, 3)
+                sum += 4*count*math.pow(1 + diff, 3)
+            elif count == 3:
+                print 4*math.pow( 1 + diff, 3) + 4*math.pow( 3 + diff, 3)
+                sum += 4*math.pow( 1 + diff, 3)
+                sum += 4*math.pow( 3 + diff, 3)
         # Pythagorean Quadruples 3:(1,2,2), for cubic 3
         # Pythagorean Quadruples 6:(2:4:4), for cubic 6
         # Pythagorean Quadruples 9:(3:6:6) 9:(1:4:8) 9:(7:4:4), for cubic 6
-        for i in range(1, size/5+1, 1):
-            print math.pow(size-(5*i-1), 3) * 4
-            sum += math.pow(size-(5*i-1), 3) * 4
-
-        pt = [v for k,v in PythagoreanTriple(size*2).items() if k <= size ]
+        #for i in range(1, size/5+1, 1):
+        #    sum += math.pow(size-(5*i-1), 3) * 4
 
         t1 = (3,4,5)
         # 2 4 6
@@ -289,7 +257,8 @@ class Lattice:
         #if size >= t1[0]+t1[1]:
         #    sum += math.pow((size-(t1[0]+t1[1])+1), 2)*2*(size-t1[2]+1)*3
 
-        for p in pt: 
+        triples = [v for k,v in PythagoreanTriple(size*2).items() if k <= size]
+        for p in triples:
             sum += math.pow((size-(p[0]+p[1])+1), 2)*2*(size-p[2]+1)*3
 
         return int(sum)
@@ -310,21 +279,6 @@ class Lattice:
                         else:
                             vectors[int(dist)][tuple(x)] = [tuple(y)]
         return self.get_cube(vectors, size)
-
-def solN():
-    for i in range(1,10):
-        for j in range(1,10):
-            for k in range(3,10):
-                if i*i+2*j*j == k*k:
-                    print i,j,k
-
-    # find x^2 + y^2 + z^2 = N^2
-    for i in range(1, 11):
-        for j in range(1, 11):
-            for k in range(1, 11):
-                d = math.sqrt(i*i+j*j+k*k)
-                if d.is_integer():
-                    print '{0},{1},{2}:{3}'.format(i,j,k,d)
 
 def PythagoreanTriple(LIMIT):
     triples = {}
@@ -381,7 +335,7 @@ def PythagoreanQuadrupleSqrt(LIMIT):
 
 def test_Formula():
     l = Lattice()
-    for i in range(2,15):
+    for i in range(2,16):
         print '{}: {} {}'.format(i, l.latticeC(i), l.latticeS(i))
     print '{}: {} {}'.format(50, l.latticeC(50), l.latticeS(50))
 
@@ -417,12 +371,13 @@ def main():
     #test_quad()
     #triple = PythagoreanTriple(LIMIT))
     l = Lattice()
-    cubics = l.find_cubes(15)
-    for v in cubics.keys():
-        for vv in cubics[v].keys():
-            print 'cubic {0}, vector {1}, size{2}'.format(v, vv, len(cubics[v][vv]))
+    #l.draw_cube(18)
     #l.draw()
-    #cubes = l.get_vectors(12)
+    #cubes = l.find_cubes(18)
+    #print cubes[9]['[4 4 7]']
+    for i in range(3, 16):
+        cubes = l.find_cubes(i)
+        print '{0}:{1}'.format(i, sum([len(x) for x in cubes[7].values()]))
     #for edge in cubes.keys():
     #    print '{0}:{1}'.format(edge, len(cubes[edge]))
 
