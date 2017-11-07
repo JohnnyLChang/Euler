@@ -69,6 +69,7 @@ class MyCube:
 
     def get_cubelines(self, size, verts=[],  base=np.array([0, 0, 0])):
         lines = []
+        vectors = []
         if len(verts) == 0:
             verts = self.get_cube(size, base)
         for i in range(0, len(verts)):
@@ -77,4 +78,5 @@ class MyCube:
                 vv = verts[j]
                 if np.linalg.norm(np.abs(v - vv)) == size:
                     lines.append([v, vv])
-        return np.array(lines)
+                    vectors.append(v-vv)
+        return np.array(lines), np.array(vectors)
