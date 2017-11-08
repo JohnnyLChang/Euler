@@ -19,6 +19,7 @@ import pickle  # data serialization
 
 from MyCube import *
 from PythagoPair import *
+from surface import *
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -76,36 +77,29 @@ class Lattice:
 
         i = 0
         centerV = []
-        cubic_edge = 9
-        wanted = cubics[cubic_edge]['[1 4 8]'] + \
-            cubics[cubic_edge]['[4 4 7]']
-        centerdict = {}
+        cubic_edge = 12
+        wanted = cubics[cubic_edge]['[4 8 8]']
         for mycubic in wanted:
             i += 1
+            print len(find_latticepoints(mycubic))
             cubic = np.array(mycubic)
-            centerV = self.cube.find_centerv(cubic)
-            if np.array_str(centerV) not in centerdict:
-                centerdict[np.array_str(centerV)] = 0
-            centerdict[np.array_str(centerV)] += 1
-            centerV = np.array(centerV)
+            centerV = np.array(self.cube.find_centerv(cubic))
 
             colorcode = uniform(0, len(mcd.XKCD_COLORS))
             xkcd = mcd.XKCD_COLORS.values()[int(cc)]
 
-            # for label, line in zip(linev, line):
-            #    centerV = (line[0] + line[1]) / 2
-            # self.ax.text(centerV[0], centerV[1], centerV[2], '{0}'.format(
-            #    np.array_str(label)), size=10)
-            if np.array_equal(centerV, np.array([7.5, 7.5, 7.5])):
-                line, linev = self.cube.get_cubelines(cubic_edge, cubic)
-                self.ax.add_collection3d(Line3DCollection(
-                    line, linewidths=1, colors=xkcd, alpha=.5))
-                # self.ax.scatter3D(centerV[0], centerV[1],
-                #                  centerV[2], s=120, c=xkcd)
-                self.ax.scatter3D(cubic[:, 0], cubic[:, 1],
+            line, linev = self.cube.get_cubelines(cubic_edge, cubic)
+            for l, label in zip(line, linev):
+                centerV = (l[0] + l[1]) / 2
+                self.ax.text(centerV[0], centerV[1], centerV[2], '{0}'.format(
+                    np.array_str(label)), size=10)
+            self.ax.add_collection3d(Line3DCollection(
+                line, linewidths=1, colors=xkcd, alpha=.5))
+            #self.ax.scatter3D(centerV[0], centerV[1],
+            #                  centerV[2], s=120, c=xkcd)
+            self.ax.scatter3D(cubic[:, 0], cubic[:, 1],
                                   cubic[:, 2], s=120, c=xkcd)
-        for c, k in centerdict.items():
-            print c, k
+        print i
         colorcode = uniform(0, len(mcd.XKCD_COLORS))
         xkcd = mcd.XKCD_COLORS.values()[int(cc)]
 
@@ -159,7 +153,7 @@ class Lattice:
 
         allvertex = self.cube.get_dot(size, norm=False)
         vectors = []
-        for i in range(0, 30):
+        for i in range(0, 50):
             vectors.append({})
         for x in allvertex:
             for y in allvertex:
@@ -325,142 +319,11 @@ class Lattice:
 
         return self.get_cube(vectors, size)
 
-
-def PythagoreanTriple(LIMIT):
-    triples = {}
-    for s in range(3, int(math.sqrt(LIMIT)), 2):
-        for t in range(s - 2, 0, -2):
-            if fractions.gcd(s, t) == 1:
-                a = s * t
-                b = (s * s - t * t) / 2
-                c = (s * s + t * t) / 2
-                if True:
-                    triples[c] = (a, b, c)
-    return collections.OrderedDict(sorted(triples.items()))
-
-
-def validateVector(v1, v2):
-    for v2p in permutations(v2, 3):
-        v = v2p * np.array(v1)
-        p = np.array([-1, 1, 1])
-        if v[1] >= v[2] and v[1] >= v[0]:
-            p = np.array([1, -1, 1])
-        elif v[2] >= v[1] and v[2] >= v[0]:
-            p = np.array([1, 1, -1])
-        if np.dot(v1, v2p * p) == 0:
-            return True, v2p * p
-    return False, ()
-
-
-def validateQuadruple(quad):
-    quadType = []
-    paired = set()
-    # check self vertical vector
-    for vector in quad:
-        ret, v = validateVector(vector, vector)
-        if not ret:
-            pass
-        else:
-            vcross = np.sort(np.absolute(np.cross(vector, v)))[
-                ::-1] / np.linalg.norm(vector)
-            vcross = tuple(vcross.astype(int))
-            if not np.array_equal(vcross, vector):
-                paired.add(vcross)
-                # v,v,T
-                quadType.append((2, (vector, vcross)))
-            else:
-                # v,v,v
-                quadType.append((1, vector))
-            paired.add(vector)
-    # find pairs in not self vertical vector
-    for combo in combinations(set(quad) - paired, 2):
-        vectory = combo[1]
-        vector = combo[0]
-        vcross = []
-        if vector in paired or vectory in paired:
-            continue
-        ret, tmp = validateVector(vector, vectory)
-        if not ret:
-            continue
-        vcross = np.cross(vector, tmp)
-        vcross = np.sort(np.absolute(vcross))[
-            ::-1] * np.linalg.norm(vector) / np.linalg.norm(vcross)
-        if np.linalg.norm(vcross) == np.linalg.norm(vector) and vcross[0].is_integer():
-            paired.add(vector)
-            paired.add(vectory)
-            paired.add(tuple(vcross.astype(int)))
-            quadType.append((3, (vector, vectory, tuple(vcross.astype(int)))))
-        else:
-            print 'not integer'
-    # give up those vector cannot make cubic
-    if len(set(quad) - paired) > 0:
-        print 'lost', set(quad) - paired
-    return quadType
-
-# using cache cannot impove performance significantly
-#
-
-
-def PythagoreanQuadrupleSqrt(LIMIT):
-    quadruple = {}
-    size = LIMIT * LIMIT * 3
-    max = int(LIMIT - 1)
-    squareSet = [False] * size
-    for i in range(1, LIMIT):
-        squareSet[i * i] = True
-
-    for i in range(3, LIMIT):
-        d = i * i
-        quad = []
-        for j in range(i - 1, i / 2, -1):
-            x = d - j * j
-            cachelen = 0
-            minJ = 1
-            for k in range(j, minJ, -1):
-                z = x - k * k
-                if squareSet[z] and z <= k * k:
-                    quad.append((j, k, int(math.sqrt(z))))
-        quadruple[i] = validateQuadruple(quad)
-    return quadruple
-
-
-def test_Formula():
-    l = Lattice()
-    for i in range(2, 16):
-        print '{}: {} {}'.format(i, l.latticeC(i), l.latticeS(i))
-    print '{}: {} {}'.format(50, l.latticeC(50), l.latticeS(50))
-
-
-def test_quad():
-    limit = 1000
-    print 'test triple'
-    start = time.time()
-    quadruple = PythagoreanTriple(5000)
-    end = time.time()
-    print 'elapsed {}'.format(end - start)
-
-    print 'test quad'
-    start = time.time()
-    quadruple = PythagoreanQuadrupleSqrt(limit)
-    end = time.time()
-    print 'elapsed {}'.format(end - start)
-
-    sum = 0
-    for k in quadruple.keys():
-        sum += len(quadruple[k])
-        print '{}:{}'.format(k, len(quadruple[k]))
-    print len(quadruple[17])
-    print len(quadruple[34])
-    print len(quadruple[51])
-    print sum
-
-
 def main():
     print 'Lattice'
     LIMIT = 5000
-    # test_quad()
-    # l = Lattice()
-    # l.get_vectors(30)
+    l = Lattice()
+    # l.get_vectors(50)
 
     # test_Formula()
     # print PythagoreanTriple(100)
@@ -469,15 +332,16 @@ def main():
     # triple = PythagoreanTriple(LIMIT))
 
     l = Lattice()
-    l.draw_cube(15)
+    l.draw_cube(20)
     l.draw()
     # cubes = l.find_cubes(18)
     # print cubes[9]['[4 4 7]']
-    for i in range(3, 16):
+    for i in range(5, 8):
         cubes = l.find_cubes(i)
-        print '{0}:{1}'.format(i, sum([len(x) for x in cubes[9].values()]))
-    # for edge in cubes.keys():
-    #    print '{0}:{1}'.format(edge, len(cubes[edge]))
+        for edge in cubes.keys():
+            print '{0}:{1}'.format(edge, sum([len(x) for x in cubes[edge].values()]))
+        #for edge in cubes.keys():
+        #    print '{0}:{1}'.format(edge, len(cubes[edge]))
 
 
 if __name__ == '__main__':
