@@ -1,7 +1,8 @@
 import math
 import collections
 import numpy as np
-from itertools import permutations
+from itertools import permutations, product
+import pickle
 
 Z = np.array([[0, 2, 2],
               [2, 3, 0],
@@ -24,6 +25,23 @@ ZP = np.array([[1, 1, 1],
                [4, 4, 4],
                ])
 
+def load(filename):
+    try:
+        fh = open(filename, 'rb')
+        return pickle.load(fh)
+    except (EnvironmentError, pickle.PicklingError) as err:
+        print 'file not found'
+    except EOFError as err:
+        print 'empty file'
+    return None
+
+def save(filename, data):
+    try:
+        with open(filename, 'wb') as fh:
+            pickle.dump(data, fh)
+    except (EnvironmentError, pickle.PicklingError) as err:
+        pass
+
 def get_cubics(vectors):    
     vertex = [None]*8
     vertex[0] = np.array([0,0,0])
@@ -38,9 +56,11 @@ def get_cubics(vectors):
 
 '''
 Iterate all different combination to find vertical pair
+1. set can add tuple as element
 ''' 
 def find_right_angles(v1, v2=None):
-    vector = [np.array(v1)]
+    vector = set()
+    vector.add(tuple(v1))
     if np.array_equal(v2,None): 
         v2 = v1
         for v2p in permutations(v2, 3):
@@ -52,10 +72,11 @@ def find_right_angles(v1, v2=None):
                 p = np.array([-1, -1, 1])
             if np.dot(v1, v2p * p) == 0:
                 v2 = v2p * p
-                vector.append(v2)
+                vector.add(tuple(v2))
                 v3 = np.cross(v1, v2) / np.linalg.norm(v2)
-                vector.append(v3.astype(int))
-                return True, tuple(vector)
+                if v3[2] < 0: v3 = v3*-1 # if x,y,-z change it to x,y,z
+                vector.add(tuple(v3.astype(int)))
+        return True, tuple(vector)
     else:
         for v2p in permutations(v2, 3):
             v = v2p * np.array(v1)  # use to find right vector for [26, 50, 24] 
@@ -66,12 +87,12 @@ def find_right_angles(v1, v2=None):
                 p = np.array([-1, -1, 1])
             if np.dot(v1, v2p * p) == 0:
                 v2 = v2p * p
-                vector.append(v2)
+                vector.add(tuple(v2))
                 v3 = np.cross(v1, v2) / np.linalg.norm(v2)
                 v3 = v3.astype(int)
                 if v3[2] < 0: # if x,y,-z change it to x,y,z
                     v3 = v3*-1
-                vector.append(v3)
+                vector.add(tuple(v3))
                 break
         return True, tuple(vector)
     return False, ()
@@ -95,7 +116,7 @@ def get_surface(vertex):
     distmap = {}
     p1plane = []
     p2plane = []
-     
+
     for i in range(1, len(vertex)):
         dist = np.linalg.norm(p1 - vertex[i])
         if dist not in distmap:
@@ -120,8 +141,39 @@ def get_surface(vertex):
         p2plane.append(normv)
     return ((p1, tuple(p1plane)), (p2, tuple(p2plane))), edge
 
+def maximum(v):
+    m = 0
+    for p in v:
+        if p > m: m = p
+    return m
+
+def dump_max_edges(cubic):
+    boundary = [0, 10000, 0, 10000, 0, 10000]
+    for v in cubic:
+        if v[0] > boundary[0]:
+            boundary[0] = v[0]
+        if v[1] > boundary[2]:
+            boundary[2] = v[1]
+        if v[2] > boundary[4]:
+            boundary[4] = v[2]
+        if v[0] < boundary[1]:
+            boundary[1] = v[0]
+        if v[1] < boundary[3]:
+            boundary[3] = v[1]
+        if v[2] < boundary[5]:
+            boundary[5] = v[2]
+    max = []
+    for i in range(0,3):
+        max.append(boundary[i*2] - boundary[i*2+1])
+    m = maximum(max)
+    print np.array(max)-m
+    return max
 
 def find_latticepoints(cubic):
+    fname = './pkl/lattice'+str(cubic)
+    lattice = load(fname)
+    if lattice is not None:
+        return lattice
     cubicPlane, dist = get_surface(cubic)
     notinCube = False
     boundary = [0, 10000, 0, 10000, 0, 10000]
@@ -158,16 +210,33 @@ def find_latticepoints(cubic):
                         break
                 if not notinCube:
                     lattice.append(p)
+    save(fname, lattice)
     return lattice
 
+def find_centerv(a):
+    max = 0
+    ret = []
+    for v in a:
+        for vv in a:
+            t = np.linalg.norm(v - vv)
+            if t > max:
+                max = t
+                ret = vv
+    return ret
+
+def get_vector_all(vector):
+    vset = set()
+    d = np.array([1,-1])
+    for v in vector:
+        for x in permutations(v, 3):
+            for y in product(d, repeat=2):
+                vset.add(tuple(np.array(x)*np.append(np.array(y), [1])))
+    return vset
 
 def main():
-    #cubic = get_cubics(find_right_angles(np.array([48,48,24])))
-    #print len(find_latticepoints(cubic))
-
-    #(11, 10, 2), (14, 5, 2)
-    cubic = get_cubics(find_right_angles(np.array([34,14,13]), np.array([29,26,2])))
-    print len(find_latticepoints(cubic))
+    v = [np.array([2,2,1])]
+    vset = set()
+    print get_vector_all(v)
 
 if __name__ == '__main__':
     main()
