@@ -73,12 +73,11 @@ def sortedMultiPrimes(count, limit, max):
 
 def getMultiPrimes(limit, mod):
     maxexp = int(math.log(limit, 3)) * 3 - 8
-    print maxexp
     '''
     Max prime = 222247
     Max exp = 30
     '''
-    smp = sortedMultiPrimes(maxexp, limit, len(Primes))
+    smp = sortedMultiPrimes(maxexp, limit/2.5, len(Primes))
     y = smp.values()[limit - 1]
     return (y[0]*int(pow(2, limit - 2 - y[1], mod))) % mod
 
