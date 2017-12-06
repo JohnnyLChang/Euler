@@ -1,38 +1,17 @@
 import math
 from sortedcontainers import SortedDict
 import time
+from prime import *
+import operator
 
 start = time.time()
 
 Primes = []
 POW2 = [0] * 100
 
-def prime_sieve(n, output={}):
-    nroot = int(math.sqrt(n))
-    sieve = range(n + 1)
-    sieve[1] = 0
-
-    for i in xrange(2, nroot + 1):
-        if sieve[i] != 0:
-            m = n / i - i
-            sieve[i * i: n + 1:i] = [0] * (m + 1)
-
-    if type(output) == dict:
-        pmap = {}
-        for x in sieve:
-            if x != 0:
-                pmap[x] = True
-        return pmap
-    elif type(output) == list:
-        return [x for x in sieve if x != 0]
-    else:
-        return None
-
-
 def cachepow2(n):
-    if POW2[n] == 0:
-        POW2[n] = pow(2, n)
-    return POW2[n]
+    if POW2[n] == 0: POW2[n] = pow(2, n)
+    return float(POW2[n])
 
 def sortedMultiPrimes(count, limit, max):
     pf3 = SortedDict()
@@ -46,29 +25,21 @@ def sortedMultiPrimes(count, limit, max):
             if s[i] < max:
                 s[i] += 1
                 idx = i
-                for j in range(i+1, count):
-                    s[j] = s[i]
+                for j in range(i+1, count): s[j] = s[i]
                 break
-        sum = 1.0
         p = [0] * count
-        for i in range(0, count):
-            p[i] = (Primes[s[i]])
-            sum *= p[i]
+        for i in range(0, count): p[i] = (Primes[s[i]])
+        sum = reduce(operator.mul, p, 1)
 
         #if overflow at beginning, skipp all value behind
-        f = sum / cachepow2(count - 2)
-        high = int(f)
-        if high > limit:
-            for i in range(idx, count):
-                s[i] = max
+        if sum / cachepow2(count - 2) > limit:
+            for i in range(idx, count): s[i] = max
             continue
 
         for div in range(count-2, 0, -1):
-            f = sum/cachepow2(div)
-            high = int(f)
-            if high > limit:
-                continue
-            pf3[int(f*10000)] = (int(sum), div)
+            f = sum / cachepow2(div)
+            if f > limit: continue
+            pf3[int(f*10000)] = (sum, div)
     return pf3
 
 def getMultiPrimes(limit, mod):
