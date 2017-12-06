@@ -14,7 +14,7 @@ def cachepow2(n):
     return float(POW2[n])
 
 def sortedMultiPrimes(count, limit, max):
-    pf3 = SortedDict()
+    pf3 = {}
     s = [0] * count
     s[-1] = -1
     idx = len(s) - 1
@@ -40,7 +40,7 @@ def sortedMultiPrimes(count, limit, max):
             f = sum / cachepow2(div)
             if f > limit: continue
             pf3[int(f*10000)] = (sum, div)
-    return pf3
+    return SortedDict(pf3)
 
 def getMultiPrimes(limit, mod):
     maxexp = int(math.log(limit, 3)) * 3 - 8
