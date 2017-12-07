@@ -119,8 +119,8 @@ public class Prog extends EulerProgBase {
 		BigInteger r = BigInteger.ZERO;
 		BigInteger v = Library.binomialBig(funcH_numWithCommon1toD(n, 1), two);
 		int i = 1;
+		r = v.multiply(night);
 		for (; i < 10; ++i) {
-			r = r.add(v);
 			for (int j = 2; j <= i && j <= n; ++j) {
 				BigInteger commonSet = Library.binomialBig(funcH_numWithCommon1toD(n, j), two);
 				commonSet = commonSet.multiply(Library.binomial(i - 1, j - 1));
@@ -148,7 +148,7 @@ public class Prog extends EulerProgBase {
 
 	@Override
 	public String BruteForce() {
-		return String.valueOf(getFriendNumber(18).mod(new BigInteger("1000267129")));
+		return String.valueOf(getFriendNumber(1000).mod(new BigInteger("1000267129")));
 	}
 	
 	@Override
