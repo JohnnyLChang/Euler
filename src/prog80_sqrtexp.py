@@ -2,35 +2,56 @@ import math
 from decimal import getcontext, Decimal
 import time
 
+m = []*100
+def fastquote(d):
+    if d == 0: return 0
+    q = 1
+    if d > 80:
+        q = 9
+    elif d > 63:
+        q = 8
+    elif d > 48:
+        q = 7
+    elif d > 35:
+        q = 6
+    elif d > 24:
+        q = 5
+    elif d > 15:
+        q = 4
+    elif d > 8:
+        q = 3
+    elif d > 3:
+        q = 2
+    return q, d-q*q, q*2
+
+def findquote(divisor, divident):
+    if divisor == 0: return fastquote(divident)
+    divisor *= 10
+    q = divident / divisor
+    if q == 0: return q, divident, divisor
+    while True:
+        remain = divident - (q + divisor) * q
+        if remain > 0: return q, remain, divisor+q*2
+        q -= 1
+    return 0,0
+
 def sqrt(n, exp):
-    high = ''
-    low = ''
+    high, low = '', ''
     num = str(n)
     if len(num)%2 != 0:
         num = '0'+num
 
-    divisor = 0
-    divident = 0
+    divisor, divident = 0, 0
     for i in range(0, len(num), 2):
         divident = divident*100 + int(num[i:i+2])
-        for i in range(1, 11):
-            if (divisor*10+i)*i > divident:
-                high += str(i-1)
-                divident -= (divisor*10+i-1)*(i-1)
-                divisor = divisor*10 + (i-1)*2
-                break
+        i, divident, divisor = findquote(divisor, divident)
+        high += str(i)
+
     if divident == 0: return high+''
     for i in range(0, exp):
         divident *= 100
-        pv = 0
-        for i in range(1, 11):
-            v = (divisor*10+i)*i
-            if v > divident:
-                low += str(i-1)
-                divident -= pv
-                divisor = divisor*10+(i-1)*2
-                break
-            pv = v
+        i, divident, divisor = findquote(divisor, divident)
+        low += str(i)
 
     return high+low
 
@@ -41,9 +62,9 @@ if __name__ == "__main__":
         d = sqrt(i, 99)
         if len(d) > 1:
             ans += sum(int(x) for x in d)
-    print ans
     t2 = time.time()
-    print 'time expand {}'.format((t2-t1)*1000.0)
+    print 'ans:{} time expand {}'.format(ans, (t2-t1)*1000.0)
+
 
     t1 = time.time()
     getcontext().prec = 102
